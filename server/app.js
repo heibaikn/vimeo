@@ -4,10 +4,10 @@ const express = require('express')
 const mongoose = require('mongoose')
 const fs = require('fs')
 const path = require('path')
-const passport = require('passport')
 const bodyParser = require('body-parser')
 const modelpath = path.join(__dirname, '/models')
-const helmet = require('')
+const helmet = require('helmet')
+const API_V1 = require('')
 
 const config = require('config-lite')({
     filename: 'default.js',
@@ -29,11 +29,6 @@ fs.readdirSync(modelpath)
     .filter(file => ~file.search(/^[^.].*\.js$/))
     .forEach(file => require(path.join(modelpath, file)))
 
-// Bootstrap routes
-require('./config/passport')(passport)
-require('./config/express')(app, passport)
-require('./config/routes')(app, passport)
-
 app.all('*', (req, res, next) => {
     res.header('Access-Control-Allow-Origin', req.headers.origin || '*')
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
@@ -46,5 +41,7 @@ app.all('*', (req, res, next) => {
         next()
     }
 })
+
+app.use('/api/v1', API_V1())
 
 module.exports = app

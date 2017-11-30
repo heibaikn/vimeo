@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "server": "./node_modules/.bin/cross-env NODE_ENV=development ./node_modules/.bin/nodemon ./server/server.js",
+    "server": "./node_modules/.bin/cross-env NODE_ENV=development ./node_modules/.bin/nodemon ./server/app.js",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
@@ -24,6 +24,7 @@
     "@angular/platform-browser": "^5.0.0",
     "@angular/platform-browser-dynamic": "^5.0.0",
     "@angular/router": "^5.0.0",
+    "async": "^2.6.0",
     "body-parser": "^1.18.2",
     "config-lite": "^2.1.0",
     "connect-mongo": "^2.0.0",
