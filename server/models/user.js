@@ -1,9 +1,5 @@
 const User = require('../schemas').User
 
-const findById = function (id, callback) {
-    User.findById(id, callback)
-}
-
 const save = function (data, callback) {
     new User(data).save(callback)
 }
@@ -24,11 +20,36 @@ const remove = function (conditions, callback) {
     User.remove(conditions, callback)
 }
 
+const create = function (data, callback) {
+    let user = new User()
+    user.nickname = data.username
+    user.avatar = data.avatar
+    user.gender = data.gender
+    user.intro = data.intro
+    user.save(callback)
+}
+
+const findById = function (id, callback) {
+    User.findById(id, callback)
+}
+
+const updateAccessTokenById = function (userId, accessToken, callback) {
+    User.update(
+        { _id: userId },
+        { access_token: accessToken },
+        function (err) {
+            callback(err, accessToken)
+        }
+    )
+}
+
 module.exports = {
     findById,
     save,
     find,
     findOne,
     update,
-    remove
+    remove,
+    create,
+    updateAccessTokenById
 }

@@ -1,7 +1,6 @@
 'use strict'
 
 const User = require('../../models').User
-const async = require('async')
 const ERROR_CODE = require('../config/errorCode')
 
 const fetchById = function (req, res, next) {

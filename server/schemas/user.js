@@ -20,9 +20,9 @@ var UserSchema = new Schema({
     like_count: { type: Number, default: 0 }, // like count
     follow_people: [{ type: ObjectId, ref: 'User' }],
     follow_people_count: { type: Number, default: 0 },
-    follow_projects: [{ type: ObjectId, ref: 'Project' }],
+    // follow_projects: [{ type: ObjectId, ref: 'Project' }],
     follow_projects_count: { type: Number, default: 0 },
-    follow_videos: [{ type: ObjectId, ref: 'Videos' }],
+    // follow_videos: [{ type: ObjectId, ref: 'Videos' }],
     follow_videos_count: { type: Number, default: 0 },
     access_token: { type: String }
 })

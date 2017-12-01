@@ -1,11 +1,16 @@
-const Token = require('../../models').Token
 const Account = require('../../models').Account
+const User = require('../../models').User
 const Captcha = require('../../models').Captcha
 const JWT = require('../../common/jwt')
 const Tools = require('../../common/tools')
 const async = require('async')
 const ERROR_CODE = require('../config/errorCode')
 const path = require('path')
+const config = require('config-lite')({
+    filename: 'default.js',
+    config_basedir: path.join('../', __dirname),
+    config_dir: 'config'
+})
 
 const login = function (req, res, next) {
     const ip = Tools.getIP(req)
@@ -94,10 +99,62 @@ const login = function (req, res, next) {
             })
         },
         function (account, callback) {
-            
+            Account.verifyPassword(password, account.password, function (err, success) {
+                if (err) console.log(err)
+                if (success) {
+                    User.findOne(
+                        {
+                            _id: account.user_id
+                        },
+                        {},
+                        {},
+                        function (err, user) {
+                            if (err) console.log(err)
+                            const accessToken = JWT.generate(config.jwt_token_secret, account.user_id, ip)
+                            User.updateAccessTokenById(user.user_id, accessToken, function (err, accessToken) {
+                                if (err) {
+                                    console.log(err)
+                                    res.status(200)
+                                    res.send({
+                                        succcess: false,
+                                        errcode: ERROR_CODE.INTERNAL_SERVER_ERROR,
+                                        errmsg: 'Failed to update access token',
+                                        data: {}
+                                    })
+                                } else {
+                                    user.access_token = accessToken
+                                    callback(null, user)
+                                }
+                            })
+                        }
+                    )
+                }
+            })
         }
-    ], function (err, result) {
-
+    ], function (err, user) {
+        if (err) {
+            const captcha = Captcha.generate()
+            Captcha.save({
+                captcha: captcha.text,
+                ip: ip,
+                user_id: user._id
+            })
+            res.status(200)
+            res.send({
+                succcess: false,
+                errcode: ERROR_CODE.INVALID_REQUEST,
+                errmsg: 'Failed to login',
+                data: {}
+            })
+        } else {
+            res.status(200)
+            res.send({
+                succcess: true,
+                errcode: ERROR_CODE.SUCCESS,
+                errmsg: '',
+                data: user
+            })
+        }
     })
 }
 

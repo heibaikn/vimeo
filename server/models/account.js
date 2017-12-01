@@ -27,11 +27,6 @@ const remove = function (conditions, callback) {
 
 const fetchByEmail = function (email, callback) {
     Account.findOne({ email: email })
-        .populate([
-            {
-                path: 'user_id'
-            }
-        ])
         .exec(callback)
 }
 
