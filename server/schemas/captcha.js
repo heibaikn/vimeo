@@ -11,4 +11,4 @@ var CaptchaSchema = new Schema({
     ip: { type: String }
 })
 
-mongoose.model('Account', CaptchaSchema)
+mongoose.model('Captcha', CaptchaSchema)

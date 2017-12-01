@@ -1,3 +1,5 @@
+'use strict'
+
 const Captcha = require('../schemas').Captcha
 const svgCaptcha = require('svg-captcha')
 

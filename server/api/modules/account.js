@@ -1,3 +1,5 @@
+'use strict'
+
 const Account = require('../../models').Account
 const User = require('../../models').User
 const Captcha = require('../../models').Captcha
@@ -5,10 +7,11 @@ const JWT = require('../../common/jwt')
 const Tools = require('../../common/tools')
 const async = require('async')
 const ERROR_CODE = require('../config/errorCode')
+const XSS = require('xss')
 const path = require('path')
 const config = require('config-lite')({
     filename: 'default.js',
-    config_basedir: path.join('../', __dirname),
+    config_basedir: path.resolve(__dirname, '..'),
     config_dir: 'config'
 })
 
@@ -158,6 +161,31 @@ const login = function (req, res, next) {
     })
 }
 
+const register = function (req, res, next) {
+    const userData = {
+        nickname: req.body.nickname || '',
+        email: req.body.email ? String(req.body.email).toLowerCase : '',
+        avatar: req.body.avatar || '',
+        gender: req.body.gender ? parseInt(req.body.gender) : -1,
+        intro: req.body.intro ? req.body.intro : '',
+        create_at: new Date()
+    }
+
+    async.waterfall([
+        function (callback) {
+            userData.nickname = XSS(userData.nickname, {
+                whiteList: [],
+                stripIgnoreTag: true
+            })
+        },
+        function (callback) {         
+        }
+    ], function (callback) {
+
+    })
+}
+
 module.exports = {
-    login
+    login,
+    register
 }

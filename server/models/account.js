@@ -1,3 +1,5 @@
+'use strict'
+
 const Account = require('../schemas').Account
 const bcrypt = require('bcryptjs')
 

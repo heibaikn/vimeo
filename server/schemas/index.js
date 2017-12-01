@@ -4,11 +4,11 @@ require('./token')
 require('./user')
 require('./account')
 require('./captcha')
-const mongoose = require('mongoose')
 const path = require('path')
+const mongoose = require('mongoose')
 const config = require('config-lite')({
     filename: 'default.js',
-    config_basedir: path.join('../', __dirname),
+    config_basedir: path.resolve(__dirname, '..'),
     config_dir: 'config'
 })
 

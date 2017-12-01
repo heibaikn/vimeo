@@ -1,3 +1,5 @@
+'use strict'
+
 const getIP = function (req) {
     return req.headers['x-forwarded-for'] ||
     req.connection.remoteAddress ||

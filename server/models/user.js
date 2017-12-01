@@ -1,3 +1,5 @@
+'use strict'
+
 const User = require('../schemas').User
 
 const save = function (data, callback) {

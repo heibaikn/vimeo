@@ -1,3 +1,5 @@
+'use strict'
+
 const Token = require('../schemas').Token
 
 const findById = function (id, callback) {
