@@ -5,15 +5,13 @@ const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
 var CaptchaSchema = new Schema({
+    captcha: { type: String, required: true },
+    area_code: { type: String },
+    phone: { type: String },
     user_id: { type: ObjectId, ref: 'User' },
     email: { type: String, lowercase: true, unique: true, trim: true },
-    password: { type: String },
-    create_at: { type: Date, default: Date.now },
-    deleted: { type: Boolean, default: false }
+    create_at: { type: Date, expires: 60 * 15, default: Date.now },
+    ip: { type: String }
 })
-
-AccountSchema.index({ email: 1 }, { unique: true })
-AccountSchema.index({ user_id: 1 }, { unique: true })
-AccountSchema.index({ email: 1, user_id: 1 }, { unique: true })
 
 mongoose.model('Account', CaptchaSchema)

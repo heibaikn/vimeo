@@ -1,6 +1,9 @@
 'use strict'
 
 require('./token')
+require('./user')
+require('./account')
+require('./captcha')
 const mongoose = require('mongoose')
 const path = require('path')
 const config = require('config-lite')({
@@ -22,4 +25,4 @@ promise.then(function (db) {
 exports.Token = mongoose.model('Token')
 exports.User = mongoose.model('User')
 exports.Account = mongoose.model('Account')
-exports.CaptchaSchema = 
+exports.Captcha = mongoose.model('Captcha')

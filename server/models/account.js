@@ -1,4 +1,5 @@
 const Account = require('../schemas').Account
+const bcrypt = require('bcryptjs')
 
 const findById = function (id, callback) {
     Account.findById(id, callback)
@@ -24,11 +25,30 @@ const remove = function (conditions, callback) {
     Account.remove(conditions, callback)
 }
 
+const fetchByEmail = function (email, callback) {
+    Account.findOne({ email: email })
+        .populate([
+            {
+                path: 'user_id'
+            }
+        ])
+        .exec(callback)
+}
+
+const verifyPassword = function (password, savedPassword, callback) {
+    bcrypt.compare(password, savedPassword, function (err, res) {
+        if (err) console.log(err)
+        callback(null, !!res)
+    })
+}
+
 module.exports = {
     findById,
     save,
     find,
     findOne,
     update,
-    remove
+    remove,
+    fetchByEmail,
+    verifyPassword
 }
