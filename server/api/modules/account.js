@@ -5,8 +5,10 @@ const User = require('../../models').User
 const Captcha = require('../../models').Captcha
 const JWT = require('../../common/jwt')
 const Tools = require('../../common/tools')
+const Validation = require('../../common/validate')
 const async = require('async')
 const ERROR_CODE = require('../config/errorCode')
+const bcrypt = require('bcryptjs')
 const XSS = require('xss')
 const path = require('path')
 const config = require('config-lite')({
@@ -164,7 +166,8 @@ const login = function (req, res, next) {
 const register = function (req, res, next) {
     const userData = {
         nickname: req.body.nickname || '',
-        email: req.body.email ? String(req.body.email).toLowerCase : '',
+        email: req.body.email ? String(req.body.email) : '',
+        password: req.body.password ? String(req.body.password) : '',
         avatar: req.body.avatar || '',
         gender: req.body.gender ? parseInt(req.body.gender) : -1,
         intro: req.body.intro ? req.body.intro : '',
@@ -173,15 +176,115 @@ const register = function (req, res, next) {
 
     async.waterfall([
         function (callback) {
+            let checkResult = {}
             userData.nickname = XSS(userData.nickname, {
                 whiteList: [],
                 stripIgnoreTag: true
             })
-        },
-        function (callback) {         
-        }
-    ], function (callback) {
+            if (!Validation.nickname(userData.nickname)) {
+                checkResult.nickname = {
+                    success: false,
+                    msg: 'invalid nickname'
+                }
+            }
+            if (!Validation.password(userData.password)) {
+                checkResult.password = {
+                    success: false,
+                    msg: 'invalid password'
+                }
+            }
+            if (!Validation.gender(userData.gender)) {
+                checkResult.gender = {
+                    succcess: false,
+                    msg: 'invalid value for gender'
+                }
+            }
+            if (!Validation.email(userData.email)) {
+                checkResult.gender = {
+                    succcess: false,
+                    msg: 'invalid email address'
+                }
+            }
 
+            let hasErr = false
+            for (let index in checkResult) {
+                if (checkResult.hasOwnProperty(index)) {
+                    hasErr = true
+                }
+            }
+            if (hasErr) {
+                res.status(200)
+                res.send({
+                    succcess: false,
+                    errcode: ERROR_CODE.INVALID_REQUEST,
+                    errmsg: 'Failed to register',
+                    data: checkResult
+                })
+            } else {
+                callback(null, checkResult)
+            }
+        },
+        function (checkResult, callback) {
+            Account.fetchByEmail(userData.email, function (err, account) {
+                if (err) console.log(err)
+
+                if (account) {
+                    res.status(200)
+                    res.send({
+                        succcess: false,
+                        errcode: ERROR_CODE.NOT_ACCEPTABLE,
+                        errmsg: 'Email address exist!',
+                        data: checkResult
+                    })
+                } else {
+                    callback(null, checkResult)
+                }
+            })
+        },
+        function (checkResult, callback) {
+            const saltRounds = 10
+            bcrypt.genSalt(saltRounds, function (err, salt) {
+                if (err) console.log(err)
+
+                bcrypt.hash(userData.password, salt, function (err, hash) {
+                    if (err) console.log(err)
+
+                    userData.password = hash
+                    callback(null, checkResult)
+                })
+            })
+        },
+        function (checkResult, callback) {
+            User.create(userData, function (err, user) {
+                if (err) console.log(err)
+                Account.save({
+                    user_id: user._id,
+                    email: userData.email,
+                    password: userData.password
+                }, function (err, account) {
+                    if (err) console.log(err)
+                    callback(null, account)
+                })
+            })
+        }
+    ], function (err, result) {
+        if (err) {
+            res.status(200)
+            res.send({
+                succcess: false,
+                errcode: ERROR_CODE.INVALID_REQUEST,
+                errmsg: 'Failed to create account',
+                data: {}
+            })
+        } else {
+            res.status(200)
+            res.send({
+                succcess: true,
+                errcode: ERROR_CODE.SUCCESS,
+                errmsg: '',
+                data: result
+            })
+        }
     })
 }
 

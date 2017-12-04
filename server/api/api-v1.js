@@ -11,4 +11,6 @@ router.post('/token/save', Token.testSave)
 
 router.post('/token/get', Token.testGet)
 
+router.post('/account/register', Account.register)
+
 module.exports = router
