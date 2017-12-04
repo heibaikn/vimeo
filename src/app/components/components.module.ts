@@ -10,7 +10,9 @@ import {
   MatFormFieldModule,
   MatOptionModule,
   MatSelectModule,
-  MatInputModule
+  MatInputModule,
+  MatRadioModule,
+  MatIconModule
 } from '@angular/material'
 
 /**
@@ -24,6 +26,8 @@ import {
     MatOptionModule,
     MatSelectModule,
     MatInputModule,
+    MatRadioModule,
+    MatIconModule,
     CommonModule,
     RouterModule,
     BrowserAnimationsModule,

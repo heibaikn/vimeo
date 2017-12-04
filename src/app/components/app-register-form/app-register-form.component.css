@@ -1,8 +1,15 @@
 .register-form-container {
     display: flex;
     flex-direction: column;
+    width: 400px;
+    margin: 150px auto;
   }
   
   .register-form-container > * {
     width: 100%;
+  }
+
+  .register-form-container button {
+    float: right;
+    margin: 10px;
   }

@@ -1,15 +1,37 @@
-<div class="register-form-container">
+<form [formGroup]="registerFormGroup" (ngSubmit)="register()" class="register-form-container">
     <mat-form-field>
-        <input matInput placeholder="Input">
+        <input matInput required formControlName="emailFormControl" [errorStateMatcher]="matcher" [(ngModel)]="accountData.email">
+        <mat-error *ngIf="emailFormControl.invalid">
+            Please enter a valid email address
+        </mat-error>
+        <mat-placeholder>
+            <i>Your email address</i>
+        </mat-placeholder>
     </mat-form-field>
-
     <mat-form-field>
-        <textarea matInput placeholder="Textarea"></textarea>
+        <input matInput required [(ngModel)]="accountData.nickname" formControlName="nicknameFormControl">
+        <mat-error *ngIf="nicknameFormControl.invalid">
+            Please enter a valid nickname (6-20 characters)
+        </mat-error>
+        <mat-placeholder>
+            <i>Your nickname</i>
+        </mat-placeholder>
     </mat-form-field>
-
     <mat-form-field>
-        <mat-select placeholder="Select">
-            <mat-option value="option">Option</mat-option>
-        </mat-select>
+        <input matInput required [type]="showPassword ? 'text' : 'password'" [(ngModel)]="accountData.password" formControlName="passwordFormControl">
+        <span matSuffix (click)="showPassword = !showPassword"><i class="fa fa-eye-slash" ng-class="showPassword? 'fa fa-eye' : 'fa fa-eye-slash'"></i></span>
+        <mat-error *ngIf="passwordFormControl.invalid">
+            Please enter a valid password (6-20 characters)
+        </mat-error>
+        <mat-placeholder>
+            <i>Your password</i>
+        </mat-placeholder>
     </mat-form-field>
-</div>
+    <mat-radio-group [(ngModel)]="accountData.gender" formControlName="genderFormControl">
+        <mat-radio-button value="0" checked=true>Male</mat-radio-button>
+        <mat-radio-button value="1">Female</mat-radio-button>
+    </mat-radio-group>
+    <mat-radio-group>
+        <button mat-raised-button color="primary">Register</button>
+    </mat-radio-group>
+</form>
