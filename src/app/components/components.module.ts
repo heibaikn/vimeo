@@ -3,10 +3,15 @@ import {CommonModule} from '@angular/common'
 import {FormsModule, ReactiveFormsModule} from '@angular/forms'
 import {RouterModule} from '@angular/router'
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
-
-
 import {AppRegisterFormComponent} from './app-register-form/app-register-form.component'
 
+import {
+  MatButtonModule,
+  MatFormFieldModule,
+  MatOptionModule,
+  MatSelectModule,
+  MatInputModule
+} from '@angular/material'
 
 /**
  * Do not specify providers for modules that might be imported by a lazy loaded module.
@@ -14,6 +19,11 @@ import {AppRegisterFormComponent} from './app-register-form/app-register-form.co
 
 @NgModule({
   imports: [
+    MatButtonModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatInputModule,
     CommonModule,
     RouterModule,
     BrowserAnimationsModule,
